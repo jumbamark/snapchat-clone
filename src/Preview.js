@@ -68,7 +68,7 @@ function Preview() {
               profilePic: "",
               timestamp: serverTimestamp(),
             });
-            navigate("/chats/view");
+            navigate("/chats", {replace: true});
           });
         }
       );
