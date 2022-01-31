@@ -14,6 +14,16 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {resetCameraImage, selectCameraImage} from "./features/cameraSlice";
 import "./Preview.css";
+import {v4 as uuid} from "uuid";
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
+import {db} from "./firebase";
+import {collection, addDoc, serverTimestamp} from "firebase/firestore";
 
 function Preview() {
   const cameraImage = useSelector(selectCameraImage);
@@ -30,6 +40,41 @@ function Preview() {
     dispatch(resetCameraImage());
   };
 
+  const sendPost = () => {
+    const id = uuid();
+
+    // upload the image to firebase storage
+    const storage = getStorage();
+    const file = `posts/${id}`;
+    const storageRef = ref(storage, file);
+    console.log(storageRef);
+    uploadString(storageRef, cameraImage, "data_url").then((uploadTask) => {
+      // console.log(uploadTask);
+      // console.log(uploadTask.metadata.name);
+
+      uploadBytesResumable(storageRef, file).on(
+        "state_changed",
+        null,
+        (error) => {
+          console.log(error);
+        },
+
+        () => {
+          getDownloadURL(ref(storage, file)).then((url) => {
+            addDoc(collection(db, "posts"), {
+              imageUrl: url,
+              username: "Jumba Mark",
+              read: false,
+              profile: "",
+              timestamp: serverTimestamp(),
+            });
+            navigate("/chats", {replace: true});
+          });
+        }
+      );
+    });
+  };
+
   return (
     <div className="preview">
       <Close className="preview-close" onClick={closePreview} />
@@ -44,7 +89,7 @@ function Preview() {
       </div>
       <img src={cameraImage} alt="" />
 
-      <div className="preview-footer">
+      <div className="preview-footer" onClick={sendPost}>
         <h2>Send Now</h2>
         <Send className="preview-sendIcon" fontSize="small" />
       </div>
