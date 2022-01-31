@@ -65,10 +65,10 @@ function Preview() {
               imageUrl: url,
               username: "Jumba Mark",
               read: false,
-              profile: "",
+              profilePic: "",
               timestamp: serverTimestamp(),
             });
-            navigate("/chats", {replace: true});
+            navigate("/chats/view");
           });
         }
       );
