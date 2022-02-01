@@ -10,15 +10,23 @@ function Chats() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
+
     onSnapshot(collection(db, "posts"), orderBy("timestamp", "desc"), (snapshot) => {
       // console.log(snapshot.docs);
-      setPosts(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data(),
-        }))
-      );
+      if (isMounted) {
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        );
+      }
     });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -52,3 +60,16 @@ function Chats() {
 }
 
 export default Chats;
+
+// const [value, setValue] = useState("checking value...");
+// useEffect(() => {
+//   let isMounted = true;
+//   fetchValue().then(() => {
+//     if (isMounted) {
+//       setValue("done!"); // no more error
+//     }
+//   });
+//   return () => {
+//     isMounted = false;
+//   };
+// }, []);
