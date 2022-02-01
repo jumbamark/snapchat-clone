@@ -25,6 +25,17 @@
   flex: 1; /* middle field to take up majority of the space */
   padding-left: 8px;
 }
+
+.chats-searchIcon {
+  color: white;
+  font-size: 13px !important;
+}
+
+.chats-chatIcon {
+  color: white;
+  font-size: 18px !important;
+}
+
 .chats-search input {
   outline: none;
   background-color: transparent;
@@ -58,4 +69,20 @@
 .chat-posts {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+.chats-takePicIcon {
+  position: absolute;
+  background-color: white;
+  border-radius: 200px;
+  color: gray;
+  font-size: 40px !important;
+  cursor: pointer;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.chats-takePicIcon:hover {
+  opacity: 0.8;
 }
