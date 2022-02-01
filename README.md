@@ -10,4 +10,4 @@
 
 ## Live Project
 
-- [Visit website](https://slack-clone-b512e.web.app)
+- [Visit website](https://snapchat-clone-3410e.web.app)
