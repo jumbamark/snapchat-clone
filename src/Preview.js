@@ -24,11 +24,13 @@ import {
 } from "firebase/storage";
 import {db} from "./firebase";
 import {collection, addDoc, serverTimestamp} from "firebase/firestore";
+import {selectUser} from "./features/appSlice";
 
 function Preview() {
   const cameraImage = useSelector(selectCameraImage);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     if (!cameraImage) {
@@ -47,7 +49,7 @@ function Preview() {
     const storage = getStorage();
     const file = `posts/${id}`;
     const storageRef = ref(storage, file);
-    console.log(storageRef);
+    // console.log(storageRef);
     uploadString(storageRef, cameraImage, "data_url").then((uploadTask) => {
       // console.log(uploadTask);
       // console.log(uploadTask.metadata.name);
@@ -63,9 +65,10 @@ function Preview() {
           getDownloadURL(ref(storage, file)).then((url) => {
             addDoc(collection(db, "posts"), {
               imageUrl: url,
-              username: "Jumba Mark",
+              // username: "Jumba Mark",
+              username: user.username,
               read: false,
-              profilePic: "",
+              profilePic: user.profilePicture,
               timestamp: serverTimestamp(),
             });
             navigate("/chats", {replace: true});
