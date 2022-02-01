@@ -5,7 +5,7 @@ import {useDispatch} from "react-redux";
 import ReactTimeago from "react-timeago";
 import "./Chat.css";
 import {selectImage} from "./features/appSlice";
-import {collection, setDoc, doc} from "firebase/firestore";
+import {setDoc, doc} from "firebase/firestore";
 import {db} from "./firebase";
 import {useNavigate} from "react-router-dom";
 
@@ -17,9 +17,13 @@ function Chat({id, username, timestamp, read, imageUrl, profilePic}) {
     if (!read) {
       // pushes the image into the store
       dispatch(selectImage(imageUrl));
-      const postsRef = collection(db, "posts");
+      // const postsRef = doc(db, "posts", id);
+      // updateDoc(postsRef, {
+      //   read: true,
+      // });
+
       setDoc(
-        doc(postsRef, "id"),
+        doc(db, "posts", id),
         {
           read: true,
         },
