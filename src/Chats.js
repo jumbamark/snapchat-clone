@@ -1,18 +1,28 @@
 import {ChatBubble, Search} from "@mui/icons-material";
 import {Avatar} from "@mui/material";
-import {collection, orderBy, onSnapshot} from "firebase/firestore";
+import {collection, orderBy, onSnapshot, query} from "firebase/firestore";
 import React, {useEffect, useState} from "react";
 import "./Chats.css";
-import {db} from "./firebase";
+import {auth, db} from "./firebase";
 import Chat from "./Chat";
+import {selectUser} from "./features/appSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {signOut} from "firebase/auth";
+import RadioButtonUnchecked from "@mui/icons-material/RadioButtonUnchecked";
+import {useNavigate} from "react-router-dom";
+import {resetCameraImage} from "./features/cameraSlice";
 
 function Chats() {
   const [posts, setPosts] = useState([]);
+  const user = useSelector(selectUser);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let isMounted = true;
 
-    onSnapshot(collection(db, "posts"), orderBy("timestamp", "desc"), (snapshot) => {
+    const q = query(collection(db, "posts"), orderBy("timestamp", "desc"));
+    onSnapshot(q, (snapshot) => {
       // console.log(snapshot.docs);
       if (isMounted) {
         setPosts(
@@ -29,17 +39,22 @@ function Chats() {
     };
   }, []);
 
+  const takeSnap = () => {
+    dispatch(resetCameraImage());
+    navigate("/");
+  };
+
   return (
     <div className="chats">
       <div className="chats-header">
-        <Avatar className="chats-avatar" />
+        <Avatar src={user.profilePic} className="chats-avatar" onClick={() => signOut(auth)} />
 
         <div className="chats-search">
-          <Search />
+          <Search className="chats-searchIcon" />
           <input type="text" placeholder="Friends" />
         </div>
 
-        <ChatBubble />
+        <ChatBubble className="chats-chatIcon" />
       </div>
 
       <div className="chat-posts">
@@ -55,6 +70,8 @@ function Chats() {
           />
         ))}
       </div>
+
+      <RadioButtonUnchecked className="chats-takePicIcon" onClick={takeSnap} fontSize="large" />
     </div>
   );
 }
