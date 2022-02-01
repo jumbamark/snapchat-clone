@@ -15,7 +15,7 @@ function App() {
             <Route exact path="/" element={<WebcamCapture />} />
             <Route path="/preview" element={<Preview />} />
             <Route path="/chats" element={<Chats />} />
-            {/* <Route path="/chats/view" element={<ChatView />} /> */}
+            <Route path="/chats/view" element={<ChatView />} />
           </Routes>
         </div>
       </BrowserRouter>
